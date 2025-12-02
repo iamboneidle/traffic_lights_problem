@@ -66,18 +66,13 @@ ltl fairness_SN { [] <> !((tlc_SN == GREEN) && cp_SN) }
 proctype traffic_light_controller_SD() {
     do
     :: (cp_SD && tlc_SD == RED) -> {
-        lock_SD = true;
         atomic {
-            (!lock_DE && !lock_ES && !lock_DN && !lock_NS) -> {
-                tlc_SD = GREEN;
-            }
+            (!lock_DE && !lock_ES && !lock_DN && !lock_NS); lock_SD = true;
         }
+        tlc_SD = GREEN;
     };
     :: (!cp_SD && tlc_SD == GREEN) -> {
-        atomic {
-            lock_SD = false;
-            tlc_SD = RED;
-        }
+        lock_SD = false; tlc_SD = RED;
     };
     od;
 }
@@ -85,18 +80,14 @@ proctype traffic_light_controller_SD() {
 proctype traffic_light_controller_DN() {
     do
     :: (cp_DN && tlc_DN == RED) -> {
-        lock_DN = true;
+        
         atomic {
-            (!lock_NS && !lock_SD && !lock_DN) -> {
-                tlc_DN = GREEN;
-            }
+            (!lock_NS && !lock_SD && !lock_DN); lock_DN = true;
         }
+        tlc_DN = GREEN;
     };
     :: (!cp_DN && tlc_DN == GREEN) -> {
-        atomic {
-            lock_DN = false;
-            tlc_DN = RED;
-        }
+        lock_DN = false; tlc_DN = RED;
     };
     od;
 }
@@ -104,18 +95,13 @@ proctype traffic_light_controller_DN() {
 proctype traffic_light_controller_NS() {
     do
     :: (cp_NS && tlc_NS == RED) -> {
-        lock_NS = true;
         atomic {
-            (!lock_SD && !lock_DN && !lock_DE && !lock_SW) -> {
-                tlc_NS = GREEN;
-            }
+            (!lock_SD && !lock_DN && !lock_DE && !lock_SW); lock_NS = true;
         }
+        tlc_NS = GREEN;
     };
     :: (!cp_NS && tlc_NS == GREEN) -> {
-        atomic {
-            lock_NS = false;
-            tlc_NS = RED;
-        }
+        lock_NS = false; tlc_NS = RED;
     };
     od;
 }
@@ -123,18 +109,14 @@ proctype traffic_light_controller_NS() {
 proctype traffic_light_controller_DE() {
     do
     :: (cp_DE && tlc_DE == RED) -> {
-        lock_DE = true;
+        
         atomic {
-            (!lock_NS && !lock_ES && !lock_SD && !lock_SN) -> {
-                tlc_DE = GREEN;
-            }
+            (!lock_NS && !lock_ES && !lock_SD && !lock_SN); lock_DE = true;
         }
+        tlc_DE = GREEN;
     };
     :: (!cp_DE && tlc_DE == GREEN) -> {
-        atomic {
-            lock_DE = false;
-            tlc_DE = RED;
-        }
+        lock_DE = false; tlc_DE = RED;
     };
     od;
 }
@@ -142,18 +124,13 @@ proctype traffic_light_controller_DE() {
 proctype traffic_light_controller_SW() {
     do
     :: (cp_SW && tlc_SW == RED) -> {
-        lock_SW = true;
         atomic {
-            (!lock_ES && !lock_NS) -> {
-                tlc_SW = GREEN;
-            }
+            (!lock_ES && !lock_NS); lock_SW = true;
         }
+        tlc_SW = GREEN;
     };
     :: (!cp_SW && tlc_SW == GREEN) -> {
-        atomic {
-            lock_SW = false;
-            tlc_SW = RED;
-        }
+        lock_SW = false; tlc_SW = RED;
     };
     od;
 }
@@ -161,18 +138,13 @@ proctype traffic_light_controller_SW() {
 proctype traffic_light_controller_ES() {
     do
     :: (cp_ES && tlc_ES == RED) -> {
-        lock_ES = true;
         atomic {
-            (!lock_SN && !lock_NE && !lock_SD && !lock_DE && !lock_SW) -> {
-                tlc_ES = GREEN;
-            }
+            (!lock_SN && !lock_NE && !lock_SD && !lock_DE && !lock_SW); lock_ES = true;
         }
+        tlc_ES = GREEN;
     };
     :: (!cp_ES && tlc_ES == GREEN) -> {
-        atomic {
-            lock_ES = false;
-            tlc_ES = RED;
-        }
+        lock_ES = false; tlc_ES = RED;
     };
     od;
 }
@@ -180,18 +152,13 @@ proctype traffic_light_controller_ES() {
 proctype traffic_light_controller_NE() {
     do
     :: (cp_NE && tlc_NE == RED) -> {
-        lock_NE = true;
         atomic {
-            (!lock_DN && !lock_ES && !lock_SN) -> {
-                tlc_NE = GREEN;
-            }
+            (!lock_DN && !lock_ES && !lock_SN); lock_NE = true;
         }
+        tlc_NE = GREEN;
     };
     :: (!cp_NE && tlc_NE == GREEN) -> {
-        atomic {
-            lock_NE = false;
-            tlc_NE = RED;
-        }
+        lock_NE = false; tlc_NE = RED;
     };
     od;
 }
@@ -199,18 +166,13 @@ proctype traffic_light_controller_NE() {
 proctype traffic_light_controller_SN() {
     do
     :: (cp_SN && tlc_SN == RED) -> {
-        lock_SN = true;
         atomic {
-            (!lock_DE && !lock_NE && !lock_ES) -> {
-                tlc_SN = GREEN;
-            }
+            (!lock_DE && !lock_NE && !lock_ES); lock_SN = true;
         }
+        tlc_SN = GREEN;
     };
     :: (!cp_SN && tlc_SN == GREEN) -> {
-        atomic {
-            lock_SN = false;
-            tlc_SN = RED;
-        }
+        lock_SN = false; tlc_SN = RED;
     };
     od;
 }
