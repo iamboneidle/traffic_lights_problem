@@ -1,214 +1,494 @@
-// Object types on the crossroad
-mtype:traffic_light_color = {RED, GREEN};
-
-// Defined objects on the crossroad
-// Defined traffic lights
-mtype:traffic_light_color tlc_SD = RED;
-mtype:traffic_light_color tlc_DN = RED;
-mtype:traffic_light_color tlc_NS = RED;
-mtype:traffic_light_color tlc_DE = RED;
-mtype:traffic_light_color tlc_SW = RED;
-mtype:traffic_light_color tlc_ES = RED;
-mtype:traffic_light_color tlc_NE = RED;
-mtype:traffic_light_color tlc_SN = RED;
-
-// Defined car presence sensors
-bool cp_SD = false;
-bool cp_DN = false;
-bool cp_NS = false;
-bool cp_DE = false;
-bool cp_SW = false;
-bool cp_ES = false;
-bool cp_NE = false;
-bool cp_SN = false;
-
-// Defined locks for each traffic light
-bool lock_SD = false;
-bool lock_DN = false;
-bool lock_NS = false;
-bool lock_DE = false;
-bool lock_SW = false;
-bool lock_ES = false;
-bool lock_NE = false;
-bool lock_SN = false;
-
-// Safety: G!((N_light=Green)||(S_light=Green)&(E_light=Green))
-ltl safety_SD { [] !((tlc_DE == GREEN || tlc_ES == GREEN || tlc_DN == GREEN || tlc_NS == GREEN) && tlc_SD == GREEN) }
-ltl safety_DN { [] !((tlc_NS == GREEN || tlc_SD == GREEN || tlc_DN == GREEN) && tlc_DN == GREEN) }
-ltl safety_NS { [] !((tlc_SD == GREEN || tlc_DN == GREEN || tlc_DE == GREEN || tlc_SW == GREEN) && tlc_NS == GREEN) }
-ltl safety_DE { [] !((tlc_NS == GREEN || tlc_ES == GREEN || tlc_SD == GREEN || tlc_SN == GREEN) && tlc_DE == GREEN) }
-ltl safety_SW { [] !((tlc_SW == GREEN || tlc_NS == GREEN) && tlc_SW == GREEN) }
-ltl safety_ES { [] !((tlc_SN == GREEN || tlc_NE == GREEN || tlc_SD == GREEN || tlc_DE == GREEN || tlc_SW == GREEN) && tlc_ES == GREEN) }
-ltl safety_NE { [] !((tlc_DN == GREEN || tlc_ES == GREEN || tlc_SN == GREEN) && tlc_NE == GREEN) }
-ltl safety_SN { [] !((tlc_DN == GREEN || tlc_NE == GREEN || tlc_ES == GREEN) && tlc_SN == GREEN) }
-
-// Liveness: G(N_sense & (N_light=Red)->F(S_light=Green))
-ltl liveness_SD { [] ((cp_SD && tlc_SD == RED) -> <> (tlc_SD == GREEN)) }
-ltl liveness_DN { [] ((cp_DN && tlc_DN == RED) -> <> (tlc_DN == GREEN)) }
-ltl liveness_NS { [] ((cp_NS && tlc_NS == RED) -> <> (tlc_NS == GREEN)) }
-ltl liveness_DE { [] ((cp_DE && tlc_DE == RED) -> <> (tlc_DE == GREEN)) }
-ltl liveness_SW { [] ((cp_SW && tlc_SW == RED) -> <> (tlc_SW == GREEN)) }
-ltl liveness_ES { [] ((cp_ES && tlc_ES == RED) -> <> (tlc_ES == GREEN)) }
-ltl liveness_NE { [] ((cp_NE && tlc_NE == RED) -> <> (tlc_NE == GREEN)) }
-ltl liveness_SN { [] ((cp_SN && tlc_SN == RED) -> <> (tlc_SN == GREEN)) }
-
-// Fairness: GF!((N_light=Green)&N_sense)
-ltl fairness_SD { [] <> !((tlc_SD == GREEN) && cp_SD) }
-ltl fairness_DN { [] <> !((tlc_DN == GREEN) && cp_DN) }
-ltl fairness_NS { [] <> !((tlc_NS == GREEN) && cp_NS) }
-ltl fairness_DE { [] <> !((tlc_DE == GREEN) && cp_DE) }
-ltl fairness_SW { [] <> !((tlc_SW == GREEN) && cp_SW) }
-ltl fairness_ES { [] <> !((tlc_ES == GREEN) && cp_ES) }
-ltl fairness_NE { [] <> !((tlc_NE == GREEN) && cp_NE) }
-ltl fairness_SN { [] <> !((tlc_SN == GREEN) && cp_SN) }
+#define DIRECTIONS_QUANTITY 6
+/* Матрица пересечений
+   DN NS DE SW ES NE
+DN  0  1  0  0  0  1
+NS  1  0  1  1  0  0
+DE  0  1  0  0  1  0
+SW  0  1  0  0  1  0
+ES  0  0  1  1  0  1
+NE  1  0  0  0  1  0
+*/
 
 
-proctype traffic_light_controller_SD() {
-    do
-    :: (cp_SD && tlc_SD == RED) -> {
-        atomic {
-            (!lock_DE && !lock_ES && !lock_DN && !lock_NS); lock_SD = true;
-        }
-        tlc_SD = GREEN;
-    };
-    :: (!cp_SD && tlc_SD == GREEN) -> {
-        lock_SD = false; tlc_SD = RED;
-    };
-    od;
+mtype = { 
+    CHECK_TRAFFIC, YES_TRAFFIC, NO_TRAFFIC,
+    ASK, FREE, LET,
+    RED, GREEN,
+    DN, NS, DE, SW, ES, NE
 }
 
-proctype traffic_light_controller_DN() {
+typedef RoundRobinParticipant {
+    chan sensor_request;
+    chan sensor_response;
+    chan controller_request;
+    chan controller_response;
+    mtype dir_name;
+};
+RoundRobinParticipant participants[DIRECTIONS_QUANTITY]
+
+typedef INTERSECTIONS_ARRAY {
+    byte arr[DIRECTIONS_QUANTITY];
+}
+INTERSECTIONS_ARRAY intersections_config[DIRECTIONS_QUANTITY];
+
+
+chan DN_SENSOR_REQUEST      = [0] of { mtype };
+chan DN_SENSOR_RESPONSE     = [0] of { mtype };
+chan DN_CONTROLLER_REQUEST  = [0] of { mtype };
+chan DN_CONTROLLER_RESPONSE = [0] of { mtype };
+
+chan NS_SENSOR_REQUEST      = [0] of { mtype };
+chan NS_SENSOR_RESPONSE     = [0] of { mtype };
+chan NS_CONTROLLER_REQUEST  = [0] of { mtype };
+chan NS_CONTROLLER_RESPONSE = [0] of { mtype };
+
+chan DE_SENSOR_REQUEST      = [0] of { mtype };
+chan DE_SENSOR_RESPONSE     = [0] of { mtype };
+chan DE_CONTROLLER_REQUEST  = [0] of { mtype };
+chan DE_CONTROLLER_RESPONSE = [0] of { mtype };
+
+chan SW_SENSOR_REQUEST      = [0] of { mtype };
+chan SW_SENSOR_RESPONSE     = [0] of { mtype };
+chan SW_CONTROLLER_REQUEST  = [0] of { mtype };
+chan SW_CONTROLLER_RESPONSE = [0] of { mtype };
+
+
+chan ES_SENSOR_REQUEST      = [0] of { mtype };
+chan ES_SENSOR_RESPONSE     = [0] of { mtype };
+chan ES_CONTROLLER_REQUEST  = [0] of { mtype };
+chan ES_CONTROLLER_RESPONSE = [0] of { mtype };
+
+chan NE_SENSOR_REQUEST      = [0] of { mtype };
+chan NE_SENSOR_RESPONSE     = [0] of { mtype };
+chan NE_CONTROLLER_REQUEST  = [0] of { mtype };
+chan NE_CONTROLLER_RESPONSE = [0] of { mtype };
+// ###################################################################
+// ###################################################################
+// ###################################################################
+// ###################################################################
+
+
+proctype ROUND_ROBIN() {
+    mtype message_in_channel;
+
+    bool requested[DIRECTIONS_QUANTITY] = false;
+    bool granted[DIRECTIONS_QUANTITY] = false;
+
+    byte curr = 0;
+    byte curr_message = 0;
+
     do
-    :: (cp_DN && tlc_DN == RED) -> {
+    ::
+        do
+        :: curr_message < DIRECTIONS_QUANTITY ->
+            if 
+            :: participants[curr_message].controller_request ? message_in_channel ->
+                if
+                :: message_in_channel == ASK -> requested[curr_message] = true
+                :: message_in_channel == FREE -> granted[curr_message] = false
+                fi;
+                curr_message = (curr_message + 1) % DIRECTIONS_QUANTITY;
+                break;
+            fi;
+            curr_message = (curr_message + 1) % DIRECTIONS_QUANTITY;
+            break;
+        od;
         
-        atomic {
-            (!lock_NS && !lock_SD && !lock_DN); lock_DN = true;
-        }
-        tlc_DN = GREEN;
-    };
-    :: (!cp_DN && tlc_DN == GREEN) -> {
-        lock_DN = false; tlc_DN = RED;
-    };
+        bool temp_condition_result;
+        byte dummy_participant = 0;
+
+        do
+        :: curr < DIRECTIONS_QUANTITY ->
+            if
+            :: requested[curr] ->
+                if
+                    :: intersections_config[curr].arr[0] == 1 && granted[0] -> temp_condition_result = false
+                    :: intersections_config[curr].arr[1] == 1 && granted[1] -> temp_condition_result = false
+                    :: intersections_config[curr].arr[2] == 1 && granted[2] -> temp_condition_result = false
+                    :: intersections_config[curr].arr[3] == 1 && granted[3] -> temp_condition_result = false
+                    :: intersections_config[curr].arr[4] == 1 && granted[4] -> temp_condition_result = false
+                    :: intersections_config[curr].arr[5] == 1 && granted[5] -> temp_condition_result = false
+                    :: else -> temp_condition_result = true
+                fi;
+
+                if
+                :: temp_condition_result ->
+                    granted[curr] = true;
+                    requested[curr] = false;
+                    participants[curr].controller_response ! LET;
+                    curr = (curr + 1) % DIRECTIONS_QUANTITY;
+                    break;
+                :: else ->
+                    curr = (curr + 1) % DIRECTIONS_QUANTITY;
+                    // break;
+                fi;
+            :: else -> 
+                curr = (curr + 1) % DIRECTIONS_QUANTITY;
+                break;
+             fi;
+        od;
     od;
 }
 
-proctype traffic_light_controller_NS() {
+// do :: conf_iter < 6 -> 
+// temp_intersection_config[conf_iter] = intersections_config[curr].arr[conf_iter]; 
+// conf_iter = conf_iter + 1; 
+// od; conf_iter = 0; 
+// /******************************************************************************/ 
+// /*Подсчет конъюнкции на выдачу прав********************************************/ 
+// do :: conf_iter < 6 -> 
+// if :: temp_intersection_config[conf_iter] == 1 -> 
+// temp_conjunction = temp_conjunction && !granted[conf_iter]; 
+// conf_iter = conf_iter + 1; 
+// :: temp_intersection_config[conf_iter] == 0 -> 
+// conf_iter = conf_iter + 1; fi; od;
+
+proctype DN_CONTROLLER() {
+    mtype sensor_msg;
+    mtype round_robin_msg;
+    mtype color = RED;
+
     do
-    :: (cp_NS && tlc_NS == RED) -> {
-        atomic {
-            (!lock_SD && !lock_DN && !lock_DE && !lock_SW); lock_NS = true;
-        }
-        tlc_NS = GREEN;
-    };
-    :: (!cp_NS && tlc_NS == GREEN) -> {
-        lock_NS = false; tlc_NS = RED;
-    };
+    :: color == RED ->
+        participants[0].sensor_request ! CHECK_TRAFFIC;
+        participants[0].sensor_response ? sensor_msg;
+        if
+        :: sensor_msg == NO_TRAFFIC ->
+            skip;
+        :: sensor_msg == YES_TRAFFIC ->
+            participants[0].controller_request ! ASK;
+            participants[0].controller_response ? round_robin_msg;
+            if
+            :: round_robin_msg == LET -> color = GREEN;
+            :: else -> skip;
+            fi;
+        fi;
+    :: color == GREEN ->
+        color = RED;
+        participants[0].controller_request ! FREE
     od;
 }
 
-proctype traffic_light_controller_DE() {
+proctype DN_SENSOR() {
+    mtype controller_msg;
+
     do
-    :: (cp_DE && tlc_DE == RED) -> {
-        
-        atomic {
-            (!lock_NS && !lock_ES && !lock_SD && !lock_SN); lock_DE = true;
-        }
-        tlc_DE = GREEN;
-    };
-    :: (!cp_DE && tlc_DE == GREEN) -> {
-        lock_DE = false; tlc_DE = RED;
-    };
+    :: 
+        participants[0].sensor_request ? controller_msg;
+        if
+        :: controller_msg == CHECK_TRAFFIC ->
+            if
+            :: participants[0].sensor_response ! YES_TRAFFIC;
+            :: participants[0].sensor_response ! NO_TRAFFIC;
+            fi;
+        fi;
     od;
 }
 
-proctype traffic_light_controller_SW() {
+proctype NS_CONTROLLER() {
+    mtype sensor_msg;
+    mtype round_robin_msg;
+    mtype color = RED;
+
     do
-    :: (cp_SW && tlc_SW == RED) -> {
-        atomic {
-            (!lock_ES && !lock_NS); lock_SW = true;
-        }
-        tlc_SW = GREEN;
-    };
-    :: (!cp_SW && tlc_SW == GREEN) -> {
-        lock_SW = false; tlc_SW = RED;
-    };
+    :: color == RED ->
+        participants[1].sensor_request ! CHECK_TRAFFIC;
+        participants[1].sensor_response ? sensor_msg;
+        if
+        :: sensor_msg == NO_TRAFFIC ->
+            skip;
+        :: sensor_msg == YES_TRAFFIC ->
+            participants[1].controller_request ! ASK;
+            participants[1].controller_response ? round_robin_msg;
+            if
+            :: round_robin_msg == LET -> color = GREEN;
+            fi;
+        fi;
+    :: color == GREEN ->
+        color = RED;
+        participants[1].controller_request ! FREE
     od;
 }
 
-proctype traffic_light_controller_ES() {
+proctype NS_SENSOR() {
+    mtype controller_msg;
+
     do
-    :: (cp_ES && tlc_ES == RED) -> {
-        atomic {
-            (!lock_SN && !lock_NE && !lock_SD && !lock_DE && !lock_SW); lock_ES = true;
-        }
-        tlc_ES = GREEN;
-    };
-    :: (!cp_ES && tlc_ES == GREEN) -> {
-        lock_ES = false; tlc_ES = RED;
-    };
+    :: 
+        participants[1].sensor_request ? controller_msg;
+        if
+        :: controller_msg == CHECK_TRAFFIC ->
+            if
+            :: participants[1].sensor_response ! YES_TRAFFIC;
+            :: participants[1].sensor_response ! NO_TRAFFIC;
+            fi;
+        fi;
     od;
 }
 
-proctype traffic_light_controller_NE() {
+proctype DE_CONTROLLER() {
+    mtype sensor_msg;
+    mtype round_robin_msg;
+    mtype color = RED;
+
     do
-    :: (cp_NE && tlc_NE == RED) -> {
-        atomic {
-            (!lock_DN && !lock_ES && !lock_SN); lock_NE = true;
-        }
-        tlc_NE = GREEN;
-    };
-    :: (!cp_NE && tlc_NE == GREEN) -> {
-        lock_NE = false; tlc_NE = RED;
-    };
+    :: color == RED ->
+        participants[2].sensor_request ! CHECK_TRAFFIC;
+        participants[2].sensor_response ? sensor_msg;
+        if
+        :: sensor_msg == NO_TRAFFIC ->
+            skip;
+        :: sensor_msg == YES_TRAFFIC ->
+            participants[2].controller_request ! ASK;
+            participants[2].controller_response ? round_robin_msg;
+            if
+            :: round_robin_msg == LET -> color = GREEN;
+            fi;
+        fi;
+    :: color == GREEN ->
+        color = RED;
+        participants[2].controller_request ! FREE
     od;
 }
 
-proctype traffic_light_controller_SN() {
+proctype DE_SENSOR() {
+    mtype controller_msg;
+
     do
-    :: (cp_SN && tlc_SN == RED) -> {
-        atomic {
-            (!lock_DE && !lock_NE && !lock_ES); lock_SN = true;
-        }
-        tlc_SN = GREEN;
-    };
-    :: (!cp_SN && tlc_SN == GREEN) -> {
-        lock_SN = false; tlc_SN = RED;
-    };
+    :: 
+        participants[2].sensor_request ? controller_msg;
+        if
+        :: controller_msg == CHECK_TRAFFIC ->
+            if
+            :: participants[2].sensor_response ! YES_TRAFFIC;
+            :: participants[2].sensor_response ! NO_TRAFFIC;
+            fi;
+        fi;
     od;
 }
 
-proctype environment() {
-	do
-	:: (!cp_SD && tlc_SD == RED) -> cp_SD = true;
-	:: (!cp_DN && tlc_DN == RED) -> cp_DN = true;
-	:: (!cp_NS && tlc_NS == RED) -> cp_NS = true;
-	:: (!cp_DE && tlc_DE == RED) -> cp_DE = true;
-	:: (!cp_SW && tlc_SW == RED) -> cp_SW = true;
-	:: (!cp_ES && tlc_ES == RED) -> cp_ES = true;
-    :: (!cp_NE && tlc_NE == RED) -> cp_NE = true;
-	:: (!cp_SN && tlc_SN == RED) -> cp_SN = true;
+proctype SW_CONTROLLER() {
+    mtype sensor_msg;
+    mtype round_robin_msg;
+    mtype color = RED;
 
-	:: (cp_SD && tlc_SD == GREEN) -> cp_SD = false;
-	:: (cp_DN && tlc_DN == GREEN) -> cp_DN = false;
-	:: (cp_NS && tlc_NS == GREEN) -> cp_NS = false;
-	:: (cp_DE && tlc_DE == GREEN) -> cp_DE = false;
-	:: (cp_SW && tlc_SW == GREEN) -> cp_SW = false;
-	:: (cp_ES && tlc_ES == GREEN) -> cp_ES = false;
-    :: (cp_NE && tlc_NE == GREEN) -> cp_NE = false;
-	:: (cp_SN && tlc_SN == GREEN) -> cp_SN = false;
-	od;
+    do
+    :: color == RED ->
+        participants[3].sensor_request ! CHECK_TRAFFIC;
+        participants[3].sensor_response ? sensor_msg;
+        if
+        :: sensor_msg == NO_TRAFFIC ->
+            skip;
+        :: sensor_msg == YES_TRAFFIC ->
+            participants[3].controller_request ! ASK;
+            participants[3].controller_response ? round_robin_msg;
+            if
+            :: round_robin_msg == LET -> color = GREEN;
+            fi;
+        fi;
+    :: color == GREEN ->
+        color = RED;
+        participants[3].controller_request ! FREE
+    od;
 }
+
+proctype SW_SENSOR() {
+    mtype controller_msg
+
+    do
+    :: 
+        participants[3].sensor_request ? controller_msg;
+        if
+        :: controller_msg == CHECK_TRAFFIC ->
+            if
+            :: participants[3].sensor_response ! YES_TRAFFIC;
+            :: participants[3].sensor_response ! NO_TRAFFIC;
+            fi;
+        fi;
+    od;
+}
+
+// ###################################################################
+// ###################################################################
+proctype ES_CONTROLLER() {
+    mtype sensor_msg;
+    mtype round_robin_msg;
+    mtype color = RED;
+
+    do
+    :: color == RED ->
+        participants[4].sensor_request ! CHECK_TRAFFIC;
+        participants[4].sensor_response ? sensor_msg;
+        if
+        :: sensor_msg == NO_TRAFFIC ->
+            skip;
+        :: sensor_msg == YES_TRAFFIC ->
+            participants[4].controller_request ! ASK;
+            participants[4].controller_response ? round_robin_msg;
+            if
+            :: round_robin_msg == LET -> color = GREEN;
+            fi;
+        fi;
+    :: color == GREEN ->
+        color = RED;
+        participants[4].controller_request ! FREE
+    od;
+}
+
+proctype ES_SENSOR() {
+    mtype controller_msg;
+
+    do
+    :: 
+        participants[4].sensor_request ? controller_msg;
+        if
+        :: controller_msg == CHECK_TRAFFIC ->
+            if
+            :: participants[4].sensor_response ! YES_TRAFFIC;
+            :: participants[4].sensor_response ! NO_TRAFFIC;
+            fi;
+        fi;
+    od;
+}
+
+proctype NE_CONTROLLER() {
+    mtype sensor_msg;
+    mtype round_robin_msg;
+    mtype color = RED;
+
+    do
+    :: color == RED ->
+        participants[5].sensor_request ! CHECK_TRAFFIC;
+        participants[5].sensor_response ? sensor_msg;
+        if
+        :: sensor_msg == NO_TRAFFIC ->
+            skip;
+        :: sensor_msg == YES_TRAFFIC ->
+            participants[5].controller_request ! ASK;
+            participants[5].controller_response ? round_robin_msg;
+            if
+            :: round_robin_msg == LET -> color = GREEN;
+            fi;
+        fi;
+    :: color == GREEN ->
+        color = RED;
+        participants[5].controller_request ! FREE
+    od;
+}
+
+proctype NE_SENSOR() {
+    mtype controller_msg;
+
+    do
+    :: 
+        participants[5].sensor_request ? controller_msg;
+        if
+        :: controller_msg == CHECK_TRAFFIC ->
+            if
+            :: participants[5].sensor_response ! YES_TRAFFIC;
+            :: participants[5].sensor_response ! NO_TRAFFIC;
+            fi;
+        fi;
+    od;
+}
+// ###################################################################
+// ###################################################################
 
 init {
-    atomic {
-        run environment();
-        run traffic_light_controller_SD();
-        run traffic_light_controller_DN();
-        run traffic_light_controller_NS();
-        run traffic_light_controller_DE();
-        run traffic_light_controller_SW();
-        run traffic_light_controller_ES();
-        run traffic_light_controller_NE();
-        run traffic_light_controller_SN();
-    }
+    // DN - 0
+    participants[0].sensor_request      = DN_SENSOR_REQUEST;
+    participants[0].sensor_response     = DN_SENSOR_RESPONSE;
+    participants[0].controller_request  = DN_CONTROLLER_REQUEST;
+    participants[0].controller_response = DN_CONTROLLER_RESPONSE;
+    participants[0].dir_name            = DN;
+    intersections_config[0].arr[0]      = 0;
+    intersections_config[0].arr[1]      = 1;
+    intersections_config[0].arr[2]      = 0;
+    intersections_config[0].arr[3]      = 0;
+    intersections_config[0].arr[4]      = 0;
+    intersections_config[0].arr[5]      = 1;
+    // NS - 1
+    participants[1].sensor_request      = NS_SENSOR_REQUEST;
+    participants[1].sensor_response     = NS_SENSOR_RESPONSE;
+    participants[1].controller_request  = NS_CONTROLLER_REQUEST;
+    participants[1].controller_response = NS_CONTROLLER_RESPONSE;
+    participants[1].dir_name            = NS;
+    intersections_config[1].arr[0]      = 1;
+    intersections_config[1].arr[1]      = 0;
+    intersections_config[1].arr[2]      = 1;
+    intersections_config[1].arr[3]      = 1;
+    intersections_config[1].arr[4]      = 0;
+    intersections_config[1].arr[5]      = 0;   
+    // DE - 2
+    participants[2].sensor_request      = DE_SENSOR_REQUEST;
+    participants[2].sensor_response     = DE_SENSOR_RESPONSE;
+    participants[2].controller_request  = DE_CONTROLLER_REQUEST;
+    participants[2].controller_response = DE_CONTROLLER_RESPONSE;
+    participants[2].dir_name            = DE;
+    intersections_config[2].arr[0]      = 0;
+    intersections_config[2].arr[1]      = 1;
+    intersections_config[2].arr[2]      = 0;
+    intersections_config[2].arr[3]      = 0;
+    intersections_config[2].arr[4]      = 1;
+    intersections_config[2].arr[5]      = 0;
+    // SW - 3
+    participants[3].sensor_request      = SW_SENSOR_REQUEST;
+    participants[3].sensor_response     = SW_SENSOR_RESPONSE;
+    participants[3].controller_request  = SW_CONTROLLER_REQUEST;
+    participants[3].controller_response = SW_CONTROLLER_RESPONSE;
+    participants[3].dir_name            = SW;
+    intersections_config[3].arr[0]      = 0;
+    intersections_config[3].arr[1]      = 1;
+    intersections_config[3].arr[2]      = 0;
+    intersections_config[3].arr[3]      = 0;
+    intersections_config[3].arr[4]      = 1;
+    intersections_config[3].arr[5]      = 0;
+
+// ###################################################################
+// ###################################################################
+    // ES - 4
+    participants[4].sensor_request      = ES_SENSOR_REQUEST;
+    participants[4].sensor_response     = ES_SENSOR_RESPONSE;
+    participants[4].controller_request  = ES_CONTROLLER_REQUEST;
+    participants[4].controller_response = ES_CONTROLLER_RESPONSE;
+    participants[4].dir_name            = ES;
+    intersections_config[4].arr[0]      = 0;
+    intersections_config[4].arr[1]      = 0;
+    intersections_config[4].arr[2]      = 1;
+    intersections_config[4].arr[3]      = 1;
+    intersections_config[4].arr[4]      = 0;
+    intersections_config[4].arr[5]      = 1;
+    // NE - 5
+    participants[5].sensor_request      = NE_SENSOR_REQUEST;
+    participants[5].sensor_response     = NE_SENSOR_RESPONSE;
+    participants[5].controller_request  = NE_CONTROLLER_REQUEST;
+    participants[5].controller_response = NE_CONTROLLER_RESPONSE;
+    participants[5].dir_name            = NE;
+    intersections_config[5].arr[0]      = 1;
+    intersections_config[5].arr[1]      = 0;
+    intersections_config[5].arr[2]      = 0;
+    intersections_config[5].arr[3]      = 0;
+    intersections_config[5].arr[4]      = 1;
+    intersections_config[5].arr[5]      = 0;
+// ###################################################################
+// ###################################################################
+    
+    run ROUND_ROBIN();
+    run DN_CONTROLLER();
+    run DN_SENSOR();
+    run NS_CONTROLLER();
+    run NS_SENSOR();
+    run DE_CONTROLLER();
+    run DE_SENSOR();
+    run SW_CONTROLLER();
+    run SW_SENSOR();
+// ###################################################################
+// ###################################################################
+    run ES_CONTROLLER();
+    run ES_SENSOR();
+    run NE_CONTROLLER();
+    run NE_SENSOR();
+    
+// ###################################################################
+// ###################################################################
 }
