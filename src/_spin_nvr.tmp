@@ -1,0 +1,11 @@
+never DN_LIVENESS {    /* !([] ((! (((DN_CONTROLLER:sensor_msg==YES_TRAFFIC)) && ((DN_CONTROLLER:color==RED)))) || (<> ((DN_CONTROLLER:color==GREEN))))) */
+T0_init:
+	do
+	:: (! ((! (((DN_CONTROLLER:sensor_msg==YES_TRAFFIC)) && ((DN_CONTROLLER:color==RED))))) && ! (((DN_CONTROLLER:color==GREEN)))) -> goto accept_S4
+	:: (1) -> goto T0_init
+	od;
+accept_S4:
+	do
+	:: (! (((DN_CONTROLLER:color==GREEN)))) -> goto accept_S4
+	od;
+}
