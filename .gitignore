@@ -1,2 +1,17 @@
 support
 .DS_Store
+~$*
+# Spin temporary files
+*_spin_nvr.tmp
+
+# Spin pan-generated files
+pan
+pan.b
+pan.c
+pan.h
+pan.m
+pan.p
+pan.t
+
+# Spin trail files
+*.pml.trail
