@@ -1,5 +1,0 @@
-spin -a  traffic_lights.pml
-ltl DN_LIVENESS: [] ((! (((DN_CONTROLLER:color==YES_TRAFFIC)) && ((DN_CONTROLLER:color==RED)))) || (<> ((DN_CONTROLLER:color==GREEN))))
-gcc -w -o pan pan.c
-
-
