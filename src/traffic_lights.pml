@@ -1,13 +1,14 @@
 #define DIRECTIONS_QUANTITY 6
 /* 
 Матрица пересечений
-   DN NS DE SW ES NE
-DN  0  1  0  0  0  1
-NS  1  0  1  1  0  0
-DE  0  1  0  0  1  0
-SW  0  1  0  0  1  0
-ES  0  0  1  1  0  1
-NE  1  0  0  0  1  0
+      0  1  2  3  4  5
+     DN NS DE SW ES NE
+0 DN  0  1  0  0  0  1
+1 NS  1  0  1  1  0  0
+2 DE  0  1  0  0  1  0
+3 SW  0  1  0  0  1  0
+4 ES  0  0  1  1  0  1
+5 NE  1  0  0  0  1  0
 */
 
 ltl DN_LIVENESS { [] (
