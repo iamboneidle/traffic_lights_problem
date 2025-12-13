@@ -10,3 +10,7 @@ gcc -o pan pan.c
 ```
 /opt/homebrew/opt/tcl-tk@8/bin/wish8.6 /Users/fedor/University/university_done/verif/ispin.tcl /Users/fedor/University/university_done/verif/support/intersection.pml
 ```
+
+```
+-O2 -DNFAIR=11 -DNOREDUCE
+```

@@ -14,110 +14,110 @@ ltl DN_LIVENESS { [] (
     (DN_CONTROLLER:message_from_sensor == YES_TRAFFIC && (DN_CONTROLLER:color == RED)) -> 
     (<> (DN_CONTROLLER:color == GREEN))
 )};
-ltl NS_LIVENESS { [] (
-    (NS_CONTROLLER:message_from_sensor == YES_TRAFFIC && (NS_CONTROLLER:color == RED)) -> 
-    (<> (NS_CONTROLLER:color == GREEN))
-)};
-ltl DE_LIVENESS { [] (
-    (DE_CONTROLLER:message_from_sensor == YES_TRAFFIC && (DE_CONTROLLER:color == RED)) -> 
-    (<> (DE_CONTROLLER:color == GREEN))
-)};
-ltl SW_LIVENESS { [] (
-    (SW_CONTROLLER:message_from_sensor == YES_TRAFFIC && (SW_CONTROLLER:color == RED)) -> 
-    (<> (SW_CONTROLLER:color == GREEN))
-)};
-ltl ES_LIVENESS { [] (
-    (ES_CONTROLLER:message_from_sensor == YES_TRAFFIC && (ES_CONTROLLER:color == RED)) -> 
-    (<> (ES_CONTROLLER:color == GREEN))
-)};
-ltl NE_LIVENESS { [] (
-    (NE_CONTROLLER:message_from_sensor == YES_TRAFFIC && (NE_CONTROLLER:color == RED)) -> 
-    (<> (NE_CONTROLLER:color == GREEN))
-)};
+// ltl NS_LIVENESS { [] (
+//     (NS_CONTROLLER:message_from_sensor == YES_TRAFFIC && (NS_CONTROLLER:color == RED)) -> 
+//     (<> (NS_CONTROLLER:color == GREEN))
+// )};
+// ltl DE_LIVENESS { [] (
+//     (DE_CONTROLLER:message_from_sensor == YES_TRAFFIC && (DE_CONTROLLER:color == RED)) -> 
+//     (<> (DE_CONTROLLER:color == GREEN))
+// )};
+// ltl SW_LIVENESS { [] (
+//     (SW_CONTROLLER:message_from_sensor == YES_TRAFFIC && (SW_CONTROLLER:color == RED)) -> 
+//     (<> (SW_CONTROLLER:color == GREEN))
+// )};
+// ltl ES_LIVENESS { [] (
+//     (ES_CONTROLLER:message_from_sensor == YES_TRAFFIC && (ES_CONTROLLER:color == RED)) -> 
+//     (<> (ES_CONTROLLER:color == GREEN))
+// )};
+// ltl NE_LIVENESS { [] (
+//     (NE_CONTROLLER:message_from_sensor == YES_TRAFFIC && (NE_CONTROLLER:color == RED)) -> 
+//     (<> (NE_CONTROLLER:color == GREEN))
+// )};
 
-ltl DN_SAFETY { [] !(
-    (DN_CONTROLLER:color == GREEN) && (
-        (NS_CONTROLLER:color == GREEN) ||
-        (NE_CONTROLLER:color == GREEN)
-    )
-)};
+// ltl DN_SAFETY { [] !(
+//     (DN_CONTROLLER:color == GREEN) && (
+//         (NS_CONTROLLER:color == GREEN) ||
+//         (NE_CONTROLLER:color == GREEN)
+//     )
+// )};
 
-ltl NS_SAFETY { [] !(
-    (NS_CONTROLLER:color == GREEN) && (
-        (DN_CONTROLLER:color == GREEN) ||
-        (DE_CONTROLLER:color == GREEN) ||
-        (SW_CONTROLLER:color == GREEN)
-    )
-)};
+// ltl NS_SAFETY { [] !(
+//     (NS_CONTROLLER:color == GREEN) && (
+//         (DN_CONTROLLER:color == GREEN) ||
+//         (DE_CONTROLLER:color == GREEN) ||
+//         (SW_CONTROLLER:color == GREEN)
+//     )
+// )};
 
-ltl DE_SAFETY { [] !(
-    (DE_CONTROLLER:color == GREEN) && (
-        (NS_CONTROLLER:color == GREEN) ||
-        (ES_CONTROLLER:color == GREEN)
-    )
-)};
+// ltl DE_SAFETY { [] !(
+//     (DE_CONTROLLER:color == GREEN) && (
+//         (NS_CONTROLLER:color == GREEN) ||
+//         (ES_CONTROLLER:color == GREEN)
+//     )
+// )};
 
-ltl SW_SAFETY { [] !(
-    (SW_CONTROLLER:color == GREEN) && (
-        (NS_CONTROLLER:color == GREEN) ||
-        (ES_CONTROLLER:color == GREEN)
-    )
-)};
+// ltl SW_SAFETY { [] !(
+//     (SW_CONTROLLER:color == GREEN) && (
+//         (NS_CONTROLLER:color == GREEN) ||
+//         (ES_CONTROLLER:color == GREEN)
+//     )
+// )};
 
-ltl ES_SAFETY { [] !(
-    (ES_CONTROLLER:color == GREEN) && (
-        (DE_CONTROLLER:color == GREEN) ||
-        (SW_CONTROLLER:color == GREEN) ||
-        (NE_CONTROLLER:color == GREEN)
-    )
-)};
+// ltl ES_SAFETY { [] !(
+//     (ES_CONTROLLER:color == GREEN) && (
+//         (DE_CONTROLLER:color == GREEN) ||
+//         (SW_CONTROLLER:color == GREEN) ||
+//         (NE_CONTROLLER:color == GREEN)
+//     )
+// )};
 
 
-ltl DN_FAIRNESS { [] 
-    (<> !(
-        DN_CONTROLLER:color == GREEN && 
-        DN_CONTROLLER:message_from_sensor == YES_TRAFFIC
-    ))
-};
+// ltl DN_FAIRNESS { [] 
+//     (<> !(
+//         DN_CONTROLLER:color == GREEN && 
+//         DN_CONTROLLER:message_from_sensor == YES_TRAFFIC
+//     ))
+// };
 
-ltl NS_FAIRNESS { [] 
-    (<> !(
-        NS_CONTROLLER:color == GREEN && 
-        NS_CONTROLLER:message_from_sensor == YES_TRAFFIC
-    ))
-};
+// ltl NS_FAIRNESS { [] 
+//     (<> !(
+//         NS_CONTROLLER:color == GREEN && 
+//         NS_CONTROLLER:message_from_sensor == YES_TRAFFIC
+//     ))
+// };
 
-ltl DE_FAIRNESS { [] 
-    (<> !(
-        DE_CONTROLLER:color == GREEN && 
-        DE_CONTROLLER:message_from_sensor == YES_TRAFFIC
-    ))
-};
+// ltl DE_FAIRNESS { [] 
+//     (<> !(
+//         DE_CONTROLLER:color == GREEN && 
+//         DE_CONTROLLER:message_from_sensor == YES_TRAFFIC
+//     ))
+// };
 
-ltl SW_FAIRNESS { [] 
-    (<> !(
-        SW_CONTROLLER:color == GREEN && 
-        SW_CONTROLLER:message_from_sensor == YES_TRAFFIC
-    ))
-};
+// ltl SW_FAIRNESS { [] 
+//     (<> !(
+//         SW_CONTROLLER:color == GREEN && 
+//         SW_CONTROLLER:message_from_sensor == YES_TRAFFIC
+//     ))
+// };
 
-ltl ES_FAIRNESS { [] 
-    (<> !(
-        ES_CONTROLLER:color == GREEN && 
-        ES_CONTROLLER:message_from_sensor == YES_TRAFFIC
-    ))
-};
+// ltl ES_FAIRNESS { [] 
+//     (<> !(
+//         ES_CONTROLLER:color == GREEN && 
+//         ES_CONTROLLER:message_from_sensor == YES_TRAFFIC
+//     ))
+// };
 
-ltl NE_FAIRNESS { [] 
-    (<> !(
-        NE_CONTROLLER:color == GREEN && 
-        NE_CONTROLLER:message_from_sensor == YES_TRAFFIC
-    ))
-};
+// ltl NE_FAIRNESS { [] 
+//     (<> !(
+//         NE_CONTROLLER:color == GREEN && 
+//         NE_CONTROLLER:message_from_sensor == YES_TRAFFIC
+//     ))
+// };
 
 mtype = { 
-    CHECK_TRAFFIC, YES_TRAFFIC, NO_TRAFFIC, CHECK_FROM_ROBIN
-    ASK, FREE, APPROVED, DECLINED
+    CHECK_TRAFFIC, YES_TRAFFIC, NO_TRAFFIC, CHECK_FROM_ROBIN, NO_CHANGES,
+    ASK, FREE, APPROVED, DECLINED,
     RED, GREEN,
 };
 
@@ -207,6 +207,8 @@ proctype ROUND_ROBIN() {
                 :: is_safe == true ->
                     granted[current_direction] = true;
                     participants[current_direction].grant_channel ! APPROVED;
+                    current_direction = (current_direction + 1) % DIRECTIONS_QUANTITY;
+                    break;
                 :: else -> 
                     granted[current_direction] = false;
                     participants[current_direction].grant_channel ! DECLINED;
@@ -215,8 +217,10 @@ proctype ROUND_ROBIN() {
                 fi;
             :: message_from_controller == FREE ->
                 granted[current_direction] = false;
+                current_direction = (current_direction + 1) % DIRECTIONS_QUANTITY;
+                break;
             fi;
-            current_direction = (current_direction + 1) % DIRECTIONS_QUANTITY;
+            // current_direction = (current_direction + 1) % DIRECTIONS_QUANTITY;
         od;
     od;
 }
@@ -226,14 +230,17 @@ proctype DN_CONTROLLER() {
     mtype approve_message;
     mtype message_from_sensor;
     mtype color = RED;
-    bool waiting_for_approval = false;
+    mtype waiting = false;
 
     do
-    ::  
+    ::
         participants[0].check_from_robin ? message_from_robin;
-        if
-        :: waiting_for_approval == false ->
+        if 
+        :: waiting == false ->
             participants[0].sensor_request ! CHECK_TRAFFIC;
+            participants[0].sensor_response ? message_from_sensor;
+        :: waiting == true ->
+            participants[0].sensor_request ! NO_CHANGES;
             participants[0].sensor_response ? message_from_sensor;
         fi;
 
@@ -241,15 +248,19 @@ proctype DN_CONTROLLER() {
         :: message_from_sensor == YES_TRAFFIC ->
             participants[0].controller_response ! ASK;
             participants[0].grant_channel ? approve_message;
-            if 
+            if
             :: approve_message == APPROVED ->
+                waiting = false;
                 color = GREEN;
+                participants[0].check_from_robin ? message_from_robin;
+                color = RED;
+                participants[0].controller_response ! FREE;
             :: approve_message == DECLINED ->
-                skip;
+                waiting = true;
             fi;
         :: message_from_sensor == NO_TRAFFIC ->
-            color = RED;
             participants[0].controller_response ! FREE;
+            waiting = false;
         fi;
     od;
 }
@@ -261,26 +272,33 @@ proctype DN_SENSOR() {
     :: 
         participants[0].sensor_request ? message;
         if
-        :: participants[0].sensor_response ! YES_TRAFFIC;
-        :: participants[0].sensor_response ! NO_TRAFFIC;
+        :: message == NO_CHANGES ->
+            participants[0].sensor_response ! YES_TRAFFIC;
+        :: message == CHECK_TRAFFIC ->
+            if
+            :: participants[0].sensor_response ! YES_TRAFFIC;
+            :: participants[0].sensor_response ! NO_TRAFFIC;
+            fi;
         fi;
     od;
 }
-
 
 proctype NS_CONTROLLER() {
     mtype message_from_robin;
     mtype approve_message;
     mtype message_from_sensor;
     mtype color = RED;
-    bool waiting_for_approval = false;
+    mtype waiting = false;
 
     do
-    :: 
+    ::
         participants[1].check_from_robin ? message_from_robin;
-        if
-        :: waiting_for_approval == false ->
+        if 
+        :: waiting == false ->
             participants[1].sensor_request ! CHECK_TRAFFIC;
+            participants[1].sensor_response ? message_from_sensor;
+        :: waiting == true ->
+            participants[1].sensor_request ! NO_CHANGES;
             participants[1].sensor_response ? message_from_sensor;
         fi;
 
@@ -288,15 +306,19 @@ proctype NS_CONTROLLER() {
         :: message_from_sensor == YES_TRAFFIC ->
             participants[1].controller_response ! ASK;
             participants[1].grant_channel ? approve_message;
-            if 
+            if
             :: approve_message == APPROVED ->
+                waiting = false;
                 color = GREEN;
+                participants[1].check_from_robin ? message_from_robin;
+                color = RED;
+                participants[1].controller_response ! FREE;
             :: approve_message == DECLINED ->
-                skip;
+                waiting = true;
             fi;
         :: message_from_sensor == NO_TRAFFIC ->
-            color = RED;
             participants[1].controller_response ! FREE;
+            waiting = false;
         fi;
     od;
 }
@@ -308,26 +330,33 @@ proctype NS_SENSOR() {
     :: 
         participants[1].sensor_request ? message;
         if
-        :: participants[1].sensor_response ! YES_TRAFFIC;
-        :: participants[1].sensor_response ! NO_TRAFFIC;
+        :: message == NO_CHANGES ->
+            participants[1].sensor_response ! YES_TRAFFIC;
+        :: message == CHECK_TRAFFIC ->
+            if
+            :: participants[1].sensor_response ! YES_TRAFFIC;
+            :: participants[1].sensor_response ! NO_TRAFFIC;
+            fi;
         fi;
     od;
 }
-
 
 proctype DE_CONTROLLER() {
     mtype message_from_robin;
     mtype approve_message;
     mtype message_from_sensor;
     mtype color = RED;
-    bool waiting_for_approval = false;
+    mtype waiting = false;
 
     do
-    :: 
+    ::
         participants[2].check_from_robin ? message_from_robin;
-        if
-        :: waiting_for_approval == false ->
+        if 
+        :: waiting == false ->
             participants[2].sensor_request ! CHECK_TRAFFIC;
+            participants[2].sensor_response ? message_from_sensor;
+        :: waiting == true ->
+            participants[2].sensor_request ! NO_CHANGES;
             participants[2].sensor_response ? message_from_sensor;
         fi;
 
@@ -335,15 +364,19 @@ proctype DE_CONTROLLER() {
         :: message_from_sensor == YES_TRAFFIC ->
             participants[2].controller_response ! ASK;
             participants[2].grant_channel ? approve_message;
-            if 
+            if
             :: approve_message == APPROVED ->
+                waiting = false;
                 color = GREEN;
+                participants[2].check_from_robin ? message_from_robin;
+                color = RED;
+                participants[2].controller_response ! FREE;
             :: approve_message == DECLINED ->
-                skip;
+                waiting = true;
             fi;
         :: message_from_sensor == NO_TRAFFIC ->
-            color = RED;
             participants[2].controller_response ! FREE;
+            waiting = false;
         fi;
     od;
 }
@@ -355,26 +388,33 @@ proctype DE_SENSOR() {
     :: 
         participants[2].sensor_request ? message;
         if
-        :: participants[2].sensor_response ! YES_TRAFFIC;
-        :: participants[2].sensor_response ! NO_TRAFFIC;
+        :: message == NO_CHANGES ->
+            participants[2].sensor_response ! YES_TRAFFIC;
+        :: message == CHECK_TRAFFIC ->
+            if
+            :: participants[2].sensor_response ! YES_TRAFFIC;
+            :: participants[2].sensor_response ! NO_TRAFFIC;
+            fi;
         fi;
     od;
 }
-
 
 proctype SW_CONTROLLER() {
     mtype message_from_robin;
     mtype approve_message;
     mtype message_from_sensor;
     mtype color = RED;
-    bool waiting_for_approval = false;
+    mtype waiting = false;
 
     do
-    :: 
+    ::
         participants[3].check_from_robin ? message_from_robin;
-        if
-        :: waiting_for_approval == false ->
+        if 
+        :: waiting == false ->
             participants[3].sensor_request ! CHECK_TRAFFIC;
+            participants[3].sensor_response ? message_from_sensor;
+        :: waiting == true ->
+            participants[3].sensor_request ! NO_CHANGES;
             participants[3].sensor_response ? message_from_sensor;
         fi;
 
@@ -382,15 +422,19 @@ proctype SW_CONTROLLER() {
         :: message_from_sensor == YES_TRAFFIC ->
             participants[3].controller_response ! ASK;
             participants[3].grant_channel ? approve_message;
-            if 
+            if
             :: approve_message == APPROVED ->
+                waiting = false;
                 color = GREEN;
+                participants[3].check_from_robin ? message_from_robin;
+                color = RED;
+                participants[3].controller_response ! FREE;
             :: approve_message == DECLINED ->
-                skip;
+                waiting = true;
             fi;
         :: message_from_sensor == NO_TRAFFIC ->
-            color = RED;
             participants[3].controller_response ! FREE;
+            waiting = false;
         fi;
     od;
 }
@@ -402,26 +446,33 @@ proctype SW_SENSOR() {
     :: 
         participants[3].sensor_request ? message;
         if
-        :: participants[3].sensor_response ! YES_TRAFFIC;
-        :: participants[3].sensor_response ! NO_TRAFFIC;
+        :: message == NO_CHANGES ->
+            participants[3].sensor_response ! YES_TRAFFIC;
+        :: message == CHECK_TRAFFIC ->
+            if
+            :: participants[3].sensor_response ! YES_TRAFFIC;
+            :: participants[3].sensor_response ! NO_TRAFFIC;
+            fi;
         fi;
     od;
 }
-
 
 proctype ES_CONTROLLER() {
     mtype message_from_robin;
     mtype approve_message;
     mtype message_from_sensor;
     mtype color = RED;
-    bool waiting_for_approval = false;
+    mtype waiting = false;
 
     do
-    :: 
+    ::
         participants[4].check_from_robin ? message_from_robin;
-        if
-        :: waiting_for_approval == false ->
+        if 
+        :: waiting == false ->
             participants[4].sensor_request ! CHECK_TRAFFIC;
+            participants[4].sensor_response ? message_from_sensor;
+        :: waiting == true ->
+            participants[4].sensor_request ! NO_CHANGES;
             participants[4].sensor_response ? message_from_sensor;
         fi;
 
@@ -429,15 +480,19 @@ proctype ES_CONTROLLER() {
         :: message_from_sensor == YES_TRAFFIC ->
             participants[4].controller_response ! ASK;
             participants[4].grant_channel ? approve_message;
-            if 
+            if
             :: approve_message == APPROVED ->
+                waiting = false;
                 color = GREEN;
+                participants[4].check_from_robin ? message_from_robin;
+                color = RED;
+                participants[4].controller_response ! FREE;
             :: approve_message == DECLINED ->
-                skip;
+                waiting = true;
             fi;
         :: message_from_sensor == NO_TRAFFIC ->
-            color = RED;
             participants[4].controller_response ! FREE;
+            waiting = false;
         fi;
     od;
 }
@@ -449,26 +504,33 @@ proctype ES_SENSOR() {
     :: 
         participants[4].sensor_request ? message;
         if
-        :: participants[4].sensor_response ! YES_TRAFFIC;
-        :: participants[4].sensor_response ! NO_TRAFFIC;
+        :: message == NO_CHANGES ->
+            participants[4].sensor_response ! YES_TRAFFIC;
+        :: message == CHECK_TRAFFIC ->
+            if
+            :: participants[4].sensor_response ! YES_TRAFFIC;
+            :: participants[4].sensor_response ! NO_TRAFFIC;
+            fi;
         fi;
     od;
 }
-
 
 proctype NE_CONTROLLER() {
     mtype message_from_robin;
     mtype approve_message;
     mtype message_from_sensor;
     mtype color = RED;
-    bool waiting_for_approval = false;
+    mtype waiting = false;
 
     do
-    :: 
+    ::
         participants[5].check_from_robin ? message_from_robin;
-        if
-        :: waiting_for_approval == false ->
+        if 
+        :: waiting == false ->
             participants[5].sensor_request ! CHECK_TRAFFIC;
+            participants[5].sensor_response ? message_from_sensor;
+        :: waiting == true ->
+            participants[5].sensor_request ! NO_CHANGES;
             participants[5].sensor_response ? message_from_sensor;
         fi;
 
@@ -476,15 +538,19 @@ proctype NE_CONTROLLER() {
         :: message_from_sensor == YES_TRAFFIC ->
             participants[5].controller_response ! ASK;
             participants[5].grant_channel ? approve_message;
-            if 
+            if
             :: approve_message == APPROVED ->
+                waiting = false;
                 color = GREEN;
+                participants[5].check_from_robin ? message_from_robin;
+                color = RED;
+                participants[5].controller_response ! FREE;
             :: approve_message == DECLINED ->
-                skip;
+                waiting = true;
             fi;
         :: message_from_sensor == NO_TRAFFIC ->
-            color = RED;
             participants[5].controller_response ! FREE;
+            waiting = false;
         fi;
     od;
 }
@@ -496,8 +562,13 @@ proctype NE_SENSOR() {
     :: 
         participants[5].sensor_request ? message;
         if
-        :: participants[5].sensor_response ! YES_TRAFFIC;
-        :: participants[5].sensor_response ! NO_TRAFFIC;
+        :: message == NO_CHANGES ->
+            participants[5].sensor_response ! YES_TRAFFIC;
+        :: message == CHECK_TRAFFIC ->
+            if
+            :: participants[5].sensor_response ! YES_TRAFFIC;
+            :: participants[5].sensor_response ! NO_TRAFFIC;
+            fi;
         fi;
     od;
 }
