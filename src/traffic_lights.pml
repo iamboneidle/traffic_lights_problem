@@ -221,7 +221,6 @@ proctype ROUND_ROBIN() {
                 current_direction = (current_direction + 1) % DIRECTIONS_QUANTITY;
                 break;
             fi;
-            // current_direction = (current_direction + 1) % DIRECTIONS_QUANTITY;
         od;
     od;
 }
