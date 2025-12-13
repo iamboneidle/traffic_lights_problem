@@ -226,12 +226,17 @@ proctype DN_CONTROLLER() {
     mtype approve_message;
     mtype message_from_sensor;
     mtype color = RED;
+    bool waiting_for_approval = false;
 
     do
     ::  
         participants[0].check_from_robin ? message_from_robin;
-        participants[0].sensor_request ! CHECK_TRAFFIC;
-        participants[0].sensor_response ? message_from_sensor;
+        if
+        :: waiting_for_approval == false ->
+            participants[0].sensor_request ! CHECK_TRAFFIC;
+            participants[0].sensor_response ? message_from_sensor;
+        fi;
+
         if
         :: message_from_sensor == YES_TRAFFIC ->
             participants[0].controller_response ! ASK;
@@ -268,12 +273,17 @@ proctype NS_CONTROLLER() {
     mtype approve_message;
     mtype message_from_sensor;
     mtype color = RED;
+    bool waiting_for_approval = false;
 
     do
     :: 
         participants[1].check_from_robin ? message_from_robin;
-        participants[1].sensor_request ! CHECK_TRAFFIC;
-        participants[1].sensor_response ? message_from_sensor;
+        if
+        :: waiting_for_approval == false ->
+            participants[0].sensor_request ! CHECK_TRAFFIC;
+            participants[0].sensor_response ? message_from_sensor;
+        fi;
+
         if
         :: message_from_sensor == YES_TRAFFIC ->
             participants[1].controller_response ! ASK;
@@ -310,12 +320,17 @@ proctype DE_CONTROLLER() {
     mtype approve_message;
     mtype message_from_sensor;
     mtype color = RED;
+    bool waiting_for_approval = false;
 
     do
     :: 
         participants[2].check_from_robin ? message_from_robin;
-        participants[2].sensor_request ! CHECK_TRAFFIC;
-        participants[2].sensor_response ? message_from_sensor;
+        if
+        :: waiting_for_approval == false ->
+            participants[0].sensor_request ! CHECK_TRAFFIC;
+            participants[0].sensor_response ? message_from_sensor;
+        fi;
+
         if
         :: message_from_sensor == YES_TRAFFIC ->
             participants[2].controller_response ! ASK;
@@ -352,12 +367,17 @@ proctype SW_CONTROLLER() {
     mtype approve_message;
     mtype message_from_sensor;
     mtype color = RED;
+    bool waiting_for_approval = false;
 
     do
     :: 
         participants[3].check_from_robin ? message_from_robin;
-        participants[3].sensor_request ! CHECK_TRAFFIC;
-        participants[3].sensor_response ? message_from_sensor;
+        if
+        :: waiting_for_approval == false ->
+            participants[0].sensor_request ! CHECK_TRAFFIC;
+            participants[0].sensor_response ? message_from_sensor;
+        fi;
+
         if
         :: message_from_sensor == YES_TRAFFIC ->
             participants[3].controller_response ! ASK;
@@ -394,12 +414,17 @@ proctype ES_CONTROLLER() {
     mtype approve_message;
     mtype message_from_sensor;
     mtype color = RED;
+    bool waiting_for_approval = false;
 
     do
     :: 
         participants[4].check_from_robin ? message_from_robin;
-        participants[4].sensor_request ! CHECK_TRAFFIC;
-        participants[4].sensor_response ? message_from_sensor;
+        if
+        :: waiting_for_approval == false ->
+            participants[0].sensor_request ! CHECK_TRAFFIC;
+            participants[0].sensor_response ? message_from_sensor;
+        fi;
+
         if
         :: message_from_sensor == YES_TRAFFIC ->
             participants[4].controller_response ! ASK;
@@ -436,12 +461,17 @@ proctype NE_CONTROLLER() {
     mtype approve_message;
     mtype message_from_sensor;
     mtype color = RED;
+    bool waiting_for_approval = false;
 
     do
     :: 
         participants[5].check_from_robin ? message_from_robin;
-        participants[5].sensor_request ! CHECK_TRAFFIC;
-        participants[5].sensor_response ? message_from_sensor;
+        if
+        :: waiting_for_approval == false ->
+            participants[0].sensor_request ! CHECK_TRAFFIC;
+            participants[0].sensor_response ? message_from_sensor;
+        fi;
+
         if
         :: message_from_sensor == YES_TRAFFIC ->
             participants[5].controller_response ! ASK;
