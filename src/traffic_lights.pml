@@ -10,110 +10,110 @@ ES  0  0  1  1  0  1
 NE  1  0  0  0  1  0
 */
 
-// ltl DN_LIVENESS { [] (
-//     (DN_CONTROLLER:message_from_sensor == YES_TRAFFIC && (DN_CONTROLLER:color == RED)) -> 
-//     (<> (DN_CONTROLLER:color == GREEN))
-// )};
-// ltl NS_LIVENESS { [] (
-//     (NS_CONTROLLER:message_from_sensor == YES_TRAFFIC && (NS_CONTROLLER:color == RED)) -> 
-//     (<> (NS_CONTROLLER:color == GREEN))
-// )};
-// ltl DE_LIVENESS { [] (
-//     (DE_CONTROLLER:message_from_sensor == YES_TRAFFIC && (DE_CONTROLLER:color == RED)) -> 
-//     (<> (DE_CONTROLLER:color == GREEN))
-// )};
-// ltl SW_LIVENESS { [] (
-//     (SW_CONTROLLER:message_from_sensor == YES_TRAFFIC && (SW_CONTROLLER:color == RED)) -> 
-//     (<> (SW_CONTROLLER:color == GREEN))
-// )};
-// ltl ES_LIVENESS { [] (
-//     (ES_CONTROLLER:message_from_sensor == YES_TRAFFIC && (ES_CONTROLLER:color == RED)) -> 
-//     (<> (ES_CONTROLLER:color == GREEN))
-// )};
-// ltl NE_LIVENESS { [] (
-//     (NE_CONTROLLER:message_from_sensor == YES_TRAFFIC && (NE_CONTROLLER:color == RED)) -> 
-//     (<> (NE_CONTROLLER:color == GREEN))
-// )};
+ltl DN_LIVENESS { [] (
+    (DN_CONTROLLER:message_from_sensor == YES_TRAFFIC && (DN_CONTROLLER:color == RED)) -> 
+    (<> (DN_CONTROLLER:color == GREEN))
+)};
+ltl NS_LIVENESS { [] (
+    (NS_CONTROLLER:message_from_sensor == YES_TRAFFIC && (NS_CONTROLLER:color == RED)) -> 
+    (<> (NS_CONTROLLER:color == GREEN))
+)};
+ltl DE_LIVENESS { [] (
+    (DE_CONTROLLER:message_from_sensor == YES_TRAFFIC && (DE_CONTROLLER:color == RED)) -> 
+    (<> (DE_CONTROLLER:color == GREEN))
+)};
+ltl SW_LIVENESS { [] (
+    (SW_CONTROLLER:message_from_sensor == YES_TRAFFIC && (SW_CONTROLLER:color == RED)) -> 
+    (<> (SW_CONTROLLER:color == GREEN))
+)};
+ltl ES_LIVENESS { [] (
+    (ES_CONTROLLER:message_from_sensor == YES_TRAFFIC && (ES_CONTROLLER:color == RED)) -> 
+    (<> (ES_CONTROLLER:color == GREEN))
+)};
+ltl NE_LIVENESS { [] (
+    (NE_CONTROLLER:message_from_sensor == YES_TRAFFIC && (NE_CONTROLLER:color == RED)) -> 
+    (<> (NE_CONTROLLER:color == GREEN))
+)};
 
-// ltl DN_SAFETY { [] !(
-//     (DN_CONTROLLER:color == GREEN) && (
-//         (NS_CONTROLLER:color == GREEN) ||
-//         (NE_CONTROLLER:color == GREEN)
-//     )
-// )};
+ltl DN_SAFETY { [] !(
+    (DN_CONTROLLER:color == GREEN) && (
+        (NS_CONTROLLER:color == GREEN) ||
+        (NE_CONTROLLER:color == GREEN)
+    )
+)};
 
-// ltl NS_SAFETY { [] !(
-//     (NS_CONTROLLER:color == GREEN) && (
-//         (DN_CONTROLLER:color == GREEN) ||
-//         (DE_CONTROLLER:color == GREEN) ||
-//         (SW_CONTROLLER:color == GREEN)
-//     )
-// )};
+ltl NS_SAFETY { [] !(
+    (NS_CONTROLLER:color == GREEN) && (
+        (DN_CONTROLLER:color == GREEN) ||
+        (DE_CONTROLLER:color == GREEN) ||
+        (SW_CONTROLLER:color == GREEN)
+    )
+)};
 
-// ltl DE_SAFETY { [] !(
-//     (DE_CONTROLLER:color == GREEN) && (
-//         (NS_CONTROLLER:color == GREEN) ||
-//         (ES_CONTROLLER:color == GREEN)
-//     )
-// )};
+ltl DE_SAFETY { [] !(
+    (DE_CONTROLLER:color == GREEN) && (
+        (NS_CONTROLLER:color == GREEN) ||
+        (ES_CONTROLLER:color == GREEN)
+    )
+)};
 
-// ltl SW_SAFETY { [] !(
-//     (SW_CONTROLLER:color == GREEN) && (
-//         (NS_CONTROLLER:color == GREEN) ||
-//         (ES_CONTROLLER:color == GREEN)
-//     )
-// )};
+ltl SW_SAFETY { [] !(
+    (SW_CONTROLLER:color == GREEN) && (
+        (NS_CONTROLLER:color == GREEN) ||
+        (ES_CONTROLLER:color == GREEN)
+    )
+)};
 
-// ltl ES_SAFETY { [] !(
-//     (ES_CONTROLLER:color == GREEN) && (
-//         (DE_CONTROLLER:color == GREEN) ||
-//         (SW_CONTROLLER:color == GREEN) ||
-//         (NE_CONTROLLER:color == GREEN)
-//     )
-// )};
+ltl ES_SAFETY { [] !(
+    (ES_CONTROLLER:color == GREEN) && (
+        (DE_CONTROLLER:color == GREEN) ||
+        (SW_CONTROLLER:color == GREEN) ||
+        (NE_CONTROLLER:color == GREEN)
+    )
+)};
 
 
-// ltl DN_FAIRNESS { [] 
-//     (<> !(
-//         DN_CONTROLLER:color == GREEN && 
-//         DN_CONTROLLER:message_from_sensor == YES_TRAFFIC
-//     ))
-// };
+ltl DN_FAIRNESS { [] 
+    (<> !(
+        DN_CONTROLLER:color == GREEN && 
+        DN_CONTROLLER:message_from_sensor == YES_TRAFFIC
+    ))
+};
 
-// ltl NS_FAIRNESS { [] 
-//     (<> !(
-//         NS_CONTROLLER:color == GREEN && 
-//         NS_CONTROLLER:message_from_sensor == YES_TRAFFIC
-//     ))
-// };
+ltl NS_FAIRNESS { [] 
+    (<> !(
+        NS_CONTROLLER:color == GREEN && 
+        NS_CONTROLLER:message_from_sensor == YES_TRAFFIC
+    ))
+};
 
-// ltl DE_FAIRNESS { [] 
-//     (<> !(
-//         DE_CONTROLLER:color == GREEN && 
-//         DE_CONTROLLER:message_from_sensor == YES_TRAFFIC
-//     ))
-// };
+ltl DE_FAIRNESS { [] 
+    (<> !(
+        DE_CONTROLLER:color == GREEN && 
+        DE_CONTROLLER:message_from_sensor == YES_TRAFFIC
+    ))
+};
 
-// ltl SW_FAIRNESS { [] 
-//     (<> !(
-//         SW_CONTROLLER:color == GREEN && 
-//         SW_CONTROLLER:message_from_sensor == YES_TRAFFIC
-//     ))
-// };
+ltl SW_FAIRNESS { [] 
+    (<> !(
+        SW_CONTROLLER:color == GREEN && 
+        SW_CONTROLLER:message_from_sensor == YES_TRAFFIC
+    ))
+};
 
-// ltl ES_FAIRNESS { [] 
-//     (<> !(
-//         ES_CONTROLLER:color == GREEN && 
-//         ES_CONTROLLER:message_from_sensor == YES_TRAFFIC
-//     ))
-// };
+ltl ES_FAIRNESS { [] 
+    (<> !(
+        ES_CONTROLLER:color == GREEN && 
+        ES_CONTROLLER:message_from_sensor == YES_TRAFFIC
+    ))
+};
 
-// ltl NE_FAIRNESS { [] 
-//     (<> !(
-//         NE_CONTROLLER:color == GREEN && 
-//         NE_CONTROLLER:message_from_sensor == YES_TRAFFIC
-//     ))
-// };
+ltl NE_FAIRNESS { [] 
+    (<> !(
+        NE_CONTROLLER:color == GREEN && 
+        NE_CONTROLLER:message_from_sensor == YES_TRAFFIC
+    ))
+};
 
 mtype = { 
     CHECK_TRAFFIC, YES_TRAFFIC, NO_TRAFFIC, CHECK_FROM_ROBIN
@@ -280,8 +280,8 @@ proctype NS_CONTROLLER() {
         participants[1].check_from_robin ? message_from_robin;
         if
         :: waiting_for_approval == false ->
-            participants[0].sensor_request ! CHECK_TRAFFIC;
-            participants[0].sensor_response ? message_from_sensor;
+            participants[1].sensor_request ! CHECK_TRAFFIC;
+            participants[1].sensor_response ? message_from_sensor;
         fi;
 
         if
@@ -327,8 +327,8 @@ proctype DE_CONTROLLER() {
         participants[2].check_from_robin ? message_from_robin;
         if
         :: waiting_for_approval == false ->
-            participants[0].sensor_request ! CHECK_TRAFFIC;
-            participants[0].sensor_response ? message_from_sensor;
+            participants[2].sensor_request ! CHECK_TRAFFIC;
+            participants[2].sensor_response ? message_from_sensor;
         fi;
 
         if
@@ -374,8 +374,8 @@ proctype SW_CONTROLLER() {
         participants[3].check_from_robin ? message_from_robin;
         if
         :: waiting_for_approval == false ->
-            participants[0].sensor_request ! CHECK_TRAFFIC;
-            participants[0].sensor_response ? message_from_sensor;
+            participants[3].sensor_request ! CHECK_TRAFFIC;
+            participants[3].sensor_response ? message_from_sensor;
         fi;
 
         if
@@ -421,8 +421,8 @@ proctype ES_CONTROLLER() {
         participants[4].check_from_robin ? message_from_robin;
         if
         :: waiting_for_approval == false ->
-            participants[0].sensor_request ! CHECK_TRAFFIC;
-            participants[0].sensor_response ? message_from_sensor;
+            participants[4].sensor_request ! CHECK_TRAFFIC;
+            participants[4].sensor_response ? message_from_sensor;
         fi;
 
         if
@@ -468,8 +468,8 @@ proctype NE_CONTROLLER() {
         participants[5].check_from_robin ? message_from_robin;
         if
         :: waiting_for_approval == false ->
-            participants[0].sensor_request ! CHECK_TRAFFIC;
-            participants[0].sensor_response ? message_from_sensor;
+            participants[5].sensor_request ! CHECK_TRAFFIC;
+            participants[5].sensor_response ? message_from_sensor;
         fi;
 
         if
