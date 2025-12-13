@@ -1,4 +1,4 @@
-#define DIRECTIONS_QUANTITY 6
+#define DIRECTIONS_QUANTITY 4
 /* 
 Матрица пересечений
    DN NS DE SW ES NE
@@ -127,6 +127,7 @@ typedef RoundRobinParticipant {
     chan sensor_request;
     chan sensor_response;
     chan grant_channel;
+    byte frequency;
 };
 RoundRobinParticipant participants[DIRECTIONS_QUANTITY]
 
@@ -191,8 +192,8 @@ proctype ROUND_ROBIN() {
                 :: intersections_config[current_direction].arr[1] == 1 && granted[1] -> is_safe = false
                 :: intersections_config[current_direction].arr[2] == 1 && granted[2] -> is_safe = false
                 :: intersections_config[current_direction].arr[3] == 1 && granted[3] -> is_safe = false
-                :: intersections_config[current_direction].arr[4] == 1 && granted[4] -> is_safe = false
-                :: intersections_config[current_direction].arr[5] == 1 && granted[5] -> is_safe = false
+                // :: intersections_config[current_direction].arr[4] == 1 && granted[4] -> is_safe = false
+                // :: intersections_config[current_direction].arr[5] == 1 && granted[5] -> is_safe = false
 
                 :: else -> is_safe = true
                 fi;
@@ -267,7 +268,7 @@ proctype DN_CONTROLLER() {
 
 proctype DN_SENSOR() {
     mtype message;
-
+    byte counter = 0;
     do
     :: 
         participants[0].sensor_request ? message;
@@ -276,8 +277,12 @@ proctype DN_SENSOR() {
             participants[0].sensor_response ! YES_TRAFFIC;
         :: message == CHECK_TRAFFIC ->
             if
-            :: participants[0].sensor_response ! YES_TRAFFIC;
-            :: participants[0].sensor_response ! NO_TRAFFIC;
+            :: counter < participants[0].frequency ->
+                participants[0].sensor_response ! NO_TRAFFIC;
+                counter = counter + 1;
+            :: else ->
+                participants[0].sensor_response ! YES_TRAFFIC;
+                counter = 0;
             fi;
         fi;
     od;
@@ -580,12 +585,13 @@ init {
     participants[0].sensor_request      = DN_SENSOR_REQUEST;
     participants[0].sensor_response     = DN_SENSOR_RESPONSE;
     participants[0].grant_channel       = DN_GRANT_CHANNEL;
+    participants[0].frequency           = 2;
     intersections_config[0].arr[0]      = 0;
     intersections_config[0].arr[1]      = 1;
     intersections_config[0].arr[2]      = 0;
     intersections_config[0].arr[3]      = 0;
-    intersections_config[0].arr[4]      = 0;
-    intersections_config[0].arr[5]      = 1;
+    // intersections_config[0].arr[4]      = 0;
+    // intersections_config[0].arr[5]      = 1;
 
     // NS - 1
     participants[1].check_from_robin    = NS_CHECK_FROM_ROBIN;
@@ -593,60 +599,65 @@ init {
     participants[1].sensor_request      = NS_SENSOR_REQUEST;
     participants[1].sensor_response     = NS_SENSOR_RESPONSE;
     participants[1].grant_channel       = NS_GRANT_CHANNEL;
+    participants[1].frequency           = 3;
     intersections_config[1].arr[0]      = 1;
     intersections_config[1].arr[1]      = 0;
     intersections_config[1].arr[2]      = 1;
     intersections_config[1].arr[3]      = 1;
-    intersections_config[1].arr[4]      = 0;
-    intersections_config[1].arr[5]      = 0;   
+    // intersections_config[1].arr[4]      = 0;
+    // intersections_config[1].arr[5]      = 0;   
     // DE - 2
     participants[2].check_from_robin    = DE_CHECK_FROM_ROBIN;
     participants[2].controller_response = DE_CONTROLLER_RESPONSE;
     participants[2].sensor_request      = DE_SENSOR_REQUEST;
     participants[2].sensor_response     = DE_SENSOR_RESPONSE;
     participants[2].grant_channel       = DE_GRANT_CHANNEL;
+    participants[2].frequency           = 4;
     intersections_config[2].arr[0]      = 0;
     intersections_config[2].arr[1]      = 1;
     intersections_config[2].arr[2]      = 0;
     intersections_config[2].arr[3]      = 0;
-    intersections_config[2].arr[4]      = 1;
-    intersections_config[2].arr[5]      = 0;
+    // intersections_config[2].arr[4]      = 1;
+    // intersections_config[2].arr[5]      = 0;
     // SW - 3
     participants[3].check_from_robin    = SW_CHECK_FROM_ROBIN;
     participants[3].controller_response = SW_CONTROLLER_RESPONSE;
     participants[3].sensor_request      = SW_SENSOR_REQUEST;
     participants[3].sensor_response     = SW_SENSOR_RESPONSE;
     participants[3].grant_channel       = SW_GRANT_CHANNEL;
+    participants[3].frequency           = 5;
     intersections_config[3].arr[0]      = 0;
     intersections_config[3].arr[1]      = 1;
     intersections_config[3].arr[2]      = 0;
     intersections_config[3].arr[3]      = 0;
-    intersections_config[3].arr[4]      = 1;
-    intersections_config[3].arr[5]      = 0;
+    // intersections_config[3].arr[4]      = 1;
+    // intersections_config[3].arr[5]      = 0;
     // ES - 4
-    participants[4].check_from_robin    = ES_CHECK_FROM_ROBIN;
-    participants[4].controller_response = ES_CONTROLLER_RESPONSE;
-    participants[4].sensor_request      = ES_SENSOR_REQUEST;
-    participants[4].sensor_response     = ES_SENSOR_RESPONSE;
-    participants[4].grant_channel       = ES_GRANT_CHANNEL;
-    intersections_config[4].arr[0]      = 0;
-    intersections_config[4].arr[1]      = 0;
-    intersections_config[4].arr[2]      = 1;
-    intersections_config[4].arr[3]      = 1;
-    intersections_config[4].arr[4]      = 0;
-    intersections_config[4].arr[5]      = 1;
+    // participants[4].check_from_robin    = ES_CHECK_FROM_ROBIN;
+    // participants[4].controller_response = ES_CONTROLLER_RESPONSE;
+    // participants[4].sensor_request      = ES_SENSOR_REQUEST;
+    // participants[4].sensor_response     = ES_SENSOR_RESPONSE;
+    // participants[4].grant_channel       = ES_GRANT_CHANNEL;
+    // participants[4].frequency           = 4;
+    // intersections_config[4].arr[0]      = 0;
+    // intersections_config[4].arr[1]      = 0;
+    // intersections_config[4].arr[2]      = 1;
+    // intersections_config[4].arr[3]      = 1;
+    // intersections_config[4].arr[4]      = 0;
+    // intersections_config[4].arr[5]      = 1;
     // NE - 5
-    participants[5].check_from_robin    = NE_CHECK_FROM_ROBIN;
-    participants[5].controller_response = NE_CONTROLLER_RESPONSE;
-    participants[5].sensor_request      = NE_SENSOR_REQUEST;
-    participants[5].sensor_response     = NE_SENSOR_RESPONSE;
-    participants[5].grant_channel       = NE_GRANT_CHANNEL;
-    intersections_config[5].arr[0]      = 1;
-    intersections_config[5].arr[1]      = 0;
-    intersections_config[5].arr[2]      = 0;
-    intersections_config[5].arr[3]      = 0;
-    intersections_config[5].arr[4]      = 1;
-    intersections_config[5].arr[5]      = 0;
+    // participants[5].check_from_robin    = NE_CHECK_FROM_ROBIN;
+    // participants[5].controller_response = NE_CONTROLLER_RESPONSE;
+    // participants[5].sensor_request      = NE_SENSOR_REQUEST;
+    // participants[5].sensor_response     = NE_SENSOR_RESPONSE;
+    // participants[5].grant_channel       = NE_GRANT_CHANNEL;
+    // participants[5].frequency           = 3;
+    // intersections_config[5].arr[0]      = 1;
+    // intersections_config[5].arr[1]      = 0;
+    // intersections_config[5].arr[2]      = 0;
+    // intersections_config[5].arr[3]      = 0;
+    // intersections_config[5].arr[4]      = 1;
+    // intersections_config[5].arr[5]      = 0;
 
     run ROUND_ROBIN();
     run DN_CONTROLLER();
@@ -657,8 +668,8 @@ init {
     run DE_SENSOR();
     run SW_CONTROLLER();
     run SW_SENSOR();
-    run ES_CONTROLLER();
-    run ES_SENSOR();
-    run NE_CONTROLLER();
-    run NE_SENSOR();
+    // run ES_CONTROLLER();
+    // run ES_SENSOR();
+    // run NE_CONTROLLER();
+    // run NE_SENSOR();
 }
