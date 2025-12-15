@@ -36,13 +36,13 @@ ltl NE_LIVENESS { [] (
     (<> (NE_CONTROLLER:color == GREEN))
 )};
 
+
 ltl DN_SAFETY { [] !(
     (DN_CONTROLLER:color == GREEN) && (
         (NS_CONTROLLER:color == GREEN) ||
         (NE_CONTROLLER:color == GREEN)
     )
 )};
-
 ltl NS_SAFETY { [] !(
     (NS_CONTROLLER:color == GREEN) && (
         (DN_CONTROLLER:color == GREEN) ||
@@ -50,21 +50,18 @@ ltl NS_SAFETY { [] !(
         (SW_CONTROLLER:color == GREEN)
     )
 )};
-
 ltl DE_SAFETY { [] !(
     (DE_CONTROLLER:color == GREEN) && (
         (NS_CONTROLLER:color == GREEN) ||
         (ES_CONTROLLER:color == GREEN)
     )
 )};
-
 ltl SW_SAFETY { [] !(
     (SW_CONTROLLER:color == GREEN) && (
         (NS_CONTROLLER:color == GREEN) ||
         (ES_CONTROLLER:color == GREEN)
     )
 )};
-
 ltl ES_SAFETY { [] !(
     (ES_CONTROLLER:color == GREEN) && (
         (DE_CONTROLLER:color == GREEN) ||
@@ -80,41 +77,37 @@ ltl DN_FAIRNESS { []
         DN_CONTROLLER:message_from_sensor == YES_TRAFFIC
     ))
 };
-
 ltl NS_FAIRNESS { [] 
     (<> !(
         NS_CONTROLLER:color == GREEN && 
         NS_CONTROLLER:message_from_sensor == YES_TRAFFIC
     ))
 };
-
 ltl DE_FAIRNESS { [] 
     (<> !(
         DE_CONTROLLER:color == GREEN && 
         DE_CONTROLLER:message_from_sensor == YES_TRAFFIC
     ))
 };
-
 ltl SW_FAIRNESS { [] 
     (<> !(
         SW_CONTROLLER:color == GREEN && 
         SW_CONTROLLER:message_from_sensor == YES_TRAFFIC
     ))
 };
-
 ltl ES_FAIRNESS { [] 
     (<> !(
         ES_CONTROLLER:color == GREEN && 
         ES_CONTROLLER:message_from_sensor == YES_TRAFFIC
     ))
 };
-
 ltl NE_FAIRNESS { [] 
     (<> !(
         NE_CONTROLLER:color == GREEN && 
         NE_CONTROLLER:message_from_sensor == YES_TRAFFIC
     ))
 };
+
 
 mtype = { 
     CHECK_TRAFFIC, YES_TRAFFIC, NO_TRAFFIC, CHECK_FROM_ROBIN, NO_CHANGES,
@@ -187,7 +180,6 @@ proctype ROUND_ROBIN() {
             bool is_safe = true;
 
             atomic {
-
                 if
                 :: intersections_config[current_direction].arr[0] == 1 && granted[0] -> is_safe = false
                 :: intersections_config[current_direction].arr[1] == 1 && granted[1] -> is_safe = false
@@ -225,6 +217,7 @@ proctype ROUND_ROBIN() {
         od;
     od;
 }
+
 
 proctype DN_CONTROLLER() {
     mtype message_from_robin;
@@ -287,6 +280,7 @@ proctype DN_SENSOR() {
         fi;
     od;
 }
+
 
 proctype NS_CONTROLLER() {
     mtype message_from_robin;
@@ -351,6 +345,7 @@ proctype NS_SENSOR() {
     od;
 }
 
+
 proctype DE_CONTROLLER() {
     mtype message_from_robin;
     mtype approve_message;
@@ -413,6 +408,7 @@ proctype DE_SENSOR() {
         fi;
     od;
 }
+
 
 proctype SW_CONTROLLER() {
     mtype message_from_robin;
@@ -477,6 +473,7 @@ proctype SW_SENSOR() {
     od;
 }
 
+
 proctype ES_CONTROLLER() {
     mtype message_from_robin;
     mtype approve_message;
@@ -539,6 +536,7 @@ proctype ES_SENSOR() {
         fi;
     od;
 }
+
 
 proctype NE_CONTROLLER() {
     mtype message_from_robin;
@@ -605,6 +603,7 @@ proctype NE_SENSOR() {
 
 
 init {
+    // DN - 0
     participants[0].check_from_robin    = DN_CHECK_FROM_ROBIN;
     participants[0].controller_response = DN_CONTROLLER_RESPONSE;
     participants[0].sensor_request      = DN_SENSOR_REQUEST;
@@ -617,7 +616,6 @@ init {
     intersections_config[0].arr[3]      = 0;
     intersections_config[0].arr[4]      = 0;
     intersections_config[0].arr[5]      = 1;
-
     // NS - 1
     participants[1].check_from_robin    = NS_CHECK_FROM_ROBIN;
     participants[1].controller_response = NS_CONTROLLER_RESPONSE;
