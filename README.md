@@ -1,16 +1,12 @@
-```shell
-./bin/spin -a src/traffic_lights.pml\n
-```
-```shell
-gcc -o pan pan.c
-```
-```shell
-./pan -N safety_SD -m1000000
-```
-```
-/opt/homebrew/opt/tcl-tk@8/bin/wish8.6 /Users/fedor/University/university_done/verif/ispin.tcl /Users/fedor/University/university_done/verif/support/intersection.pml
-```
+# Traffic Lights Problem
+
+Данный репозиторий оставлен для представителей будущих поколений, которым не повезло столкнуться в Санкт-Петербургском Политехническом университете с дисциплиной "Верификация распределенных алгоритмов и систем".
 
 ```
--O2 -DNFAIR=11 -DNOREDUCE
+.
+├── README.md
+├── report.pdf                    |<- Отчет с маломальским объяснением
+└── src
+    ├── traffic_lights.pml        |<- Решение для 6 направлений
+    └── traffic_lights_short.pml. |<- Укороченное для 4 направлений
 ```
